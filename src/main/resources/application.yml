@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: vg-ms-grade-management
+  data:
+    mongodb:
+      uri: mongodb+srv://cristopherguzman:orTIWL10NmFAo3S5@cluster0.o8sc9.mongodb.net/AS231S5_PRS2?retryWrites=true&w=majority&appName=Cluster0
+      database: AS231S5_PRS2
