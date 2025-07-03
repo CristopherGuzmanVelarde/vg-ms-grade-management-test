@@ -44,14 +44,155 @@ src/main/java/pe/edu/vallegrande/vg_ms_grade_management/
 
 ### Endpoints de Notificaciones (`/notifications`)
 
-| Método | Path                | Descripción                                   | JSON de Request (Ejemplo) | JSON de Response (Ejemplo) |
-|--------|---------------------|-----------------------------------------------|---------------------------|----------------------------|
-| GET    | `/`                 | Obtiene todas las notificaciones no eliminadas| N/A                       | `[ { "id": "1", "recipientId": "4", "recipientType": "Amelia Flores Ascencio", "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.", "notificationType": "Calificación Publicada", "status": "Pendiente", "channel": "Correo", "createdAt": "2024-01-15T10:30:00", "sentAt": null, "deleted": false } ]` |
-| GET    | `/{id}`             | Obtiene una notificación por su ID            | N/A                       | `{ "id": "1", "recipientId": "4", "recipientType": "Amelia Flores Ascencio", "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.", "notificationType": "Calificación Publicada", "status": "Pendiente", "channel": "Correo", "createdAt": "2024-01-15T10:30:00", "sentAt": null, "deleted": false }` |
-| POST   | `/`                 | Crea una nueva notificación                   | `{ "recipientId": "4", "recipientType": "Amelia Flores Ascencio", "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.", "notificationType": "Calificación Publicada", "status": "Pendiente", "channel": "Correo" }` | `{ "id": "2", "recipientId": "4", "recipientType": "Amelia Flores Ascencio", "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.", "notificationType": "Calificación Publicada", "status": "Pendiente", "channel": "Correo", "createdAt": "2024-01-15T11:00:00", "sentAt": null, "deleted": false }` |
-| PUT    | `/{id}`             | Actualiza una notificación existente          | `{ "recipientId": "4", "recipientType": "Amelia Flores Ascencio", "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido actualizada. Nueva calificación: 20.0/20 puntos.", "notificationType": "Calificación Actualizada", "status": "Pendiente", "channel": "Correo" }` | `{ "id": "1", "recipientId": "4", "recipientType": "Amelia Flores Ascencio", "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido actualizada. Nueva calificación: 20.0/20 puntos.", "notificationType": "Calificación Actualizada", "status": "Pendiente", "channel": "Correo", "createdAt": "2024-01-15T10:30:00", "sentAt": null, "deleted": false }` |
-| DELETE | `/{id}`             | Elimina lógicamente una notificación          | N/A                       | `{ "id": "1", "recipientId": "4", "recipientType": "Amelia Flores Ascencio", "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.", "notificationType": "Calificación Publicada", "status": "Pendiente", "channel": "Correo", "createdAt": "2024-01-15T10:30:00", "sentAt": null, "deleted": true }` |
-| PUT    | `/{id}/restore`     | Restaura una notificación eliminada lógicamente | N/A                     | `{ "id": "1", "recipientId": "4", "recipientType": "Amelia Flores Ascencio", "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.", "notificationType": "Calificación Publicada", "status": "Pendiente", "channel": "Correo", "createdAt": "2024-01-15T10:30:00", "sentAt": null, "deleted": false }` |
+Los endpoints están organizados por método HTTP:
+
+#### GET - Consultas
+
+##### GET `/notifications` - Obtener todas las notificaciones no eliminadas
+**Descripción:** Obtiene todas las notificaciones activas (no eliminadas lógicamente)
+**Request:** No requiere cuerpo
+**Response:** Array de NotificationResponse
+```json
+[
+  {
+    "id": "65d2a7f1b3e9c8a7b6c5d4e3",
+    "recipientId": "4",
+    "recipientType": "Amelia Flores Ascencio",
+    "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.",
+    "notificationType": "Calificación Publicada",
+    "status": "Pendiente",
+    "channel": "Correo",
+    "createdAt": "2024-01-15T10:30:00",
+    "sentAt": null,
+    "deleted": false
+  }
+]
+```
+
+##### GET `/notifications/{id}` - Obtener una notificación por ID
+**Descripción:** Obtiene una notificación específica por su ID
+**Parámetros:** `id` (String) - ID de la notificación
+**Request:** No requiere cuerpo
+**Response:** NotificationResponse o 404 si no existe
+```json
+{
+  "id": "65d2a7f1b3e9c8a7b6c5d4e3",
+  "recipientId": "4",
+  "recipientType": "Amelia Flores Ascencio",
+  "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.",
+  "notificationType": "Calificación Publicada",
+  "status": "Pendiente",
+  "channel": "Correo",
+  "createdAt": "2024-01-15T10:30:00",
+  "sentAt": null,
+  "deleted": false
+}
+```
+
+#### POST - Creación
+
+##### POST `/notifications` - Crear una nueva notificación
+**Descripción:** Crea una nueva notificación
+**Request:** NotificationRequest
+```json
+{
+  "recipientId": "4",
+  "recipientType": "Amelia Flores Ascencio",
+  "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.",
+  "notificationType": "Calificación Publicada",
+  "status": "Pendiente",
+  "channel": "Correo"
+}
+```
+**Response (201 CREATED):** NotificationResponse
+```json
+{
+  "id": "65d2a7f1b3e9c8a7b6c5d4e3",
+  "recipientId": "4",
+  "recipientType": "Amelia Flores Ascencio",
+  "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.",
+  "notificationType": "Calificación Publicada",
+  "status": "Pendiente",
+  "channel": "Correo",
+  "createdAt": "2024-01-15T11:00:00",
+  "sentAt": null,
+  "deleted": false
+}
+```
+
+#### PUT - Actualización
+
+##### PUT `/notifications/{id}` - Actualizar una notificación existente
+**Descripción:** Actualiza una notificación existente
+**Parámetros:** `id` (String) - ID de la notificación a actualizar
+**Request:** NotificationRequest
+```json
+{
+  "recipientId": "4",
+  "recipientType": "Amelia Flores Ascencio",
+  "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido actualizada. Nueva calificación: 18.0/20 puntos.",
+  "notificationType": "Calificación Actualizada",
+  "status": "Pendiente",
+  "channel": "Correo"
+}
+```
+**Response:** NotificationResponse o 404 si no existe
+```json
+{
+  "id": "65d2a7f1b3e9c8a7b6c5d4e3",
+  "recipientId": "4",
+  "recipientType": "Amelia Flores Ascencio",
+  "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido actualizada. Nueva calificación: 18.0/20 puntos.",
+  "notificationType": "Calificación Actualizada",
+  "status": "Pendiente",
+  "channel": "Correo",
+  "createdAt": "2024-01-15T10:30:00",
+  "sentAt": null,
+  "deleted": false
+}
+```
+
+##### PUT `/notifications/{id}/restore` - Restaurar una notificación eliminada
+**Descripción:** Restaura una notificación eliminada lógicamente
+**Parámetros:** `id` (String) - ID de la notificación a restaurar
+**Request:** No requiere cuerpo
+**Response:** NotificationResponse o 404 si no existe
+```json
+{
+  "id": "65d2a7f1b3e9c8a7b6c5d4e3",
+  "recipientId": "4",
+  "recipientType": "Amelia Flores Ascencio",
+  "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.",
+  "notificationType": "Calificación Publicada",
+  "status": "Pendiente",
+  "channel": "Correo",
+  "createdAt": "2024-01-15T10:30:00",
+  "sentAt": null,
+  "deleted": false
+}
+```
+
+#### DELETE - Eliminación
+
+##### DELETE `/notifications/{id}` - Eliminar lógicamente una notificación
+**Descripción:** Elimina lógicamente una notificación (marca como deleted=true)
+**Parámetros:** `id` (String) - ID de la notificación a eliminar
+**Request:** No requiere cuerpo
+**Response:** NotificationResponse con deleted=true o 404 si no existe
+```json
+{
+  "id": "65d2a7f1b3e9c8a7b6c5d4e3",
+  "recipientId": "4",
+  "recipientType": "Amelia Flores Ascencio",
+  "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.",
+  "notificationType": "Calificación Publicada",
+  "status": "Pendiente",
+  "channel": "Correo",
+  "createdAt": "2024-01-15T10:30:00",
+  "sentAt": null,
+  "deleted": true
+}
+```
 
 ## Tipos de Datos
 
@@ -78,7 +219,7 @@ src/main/java/pe/edu/vallegrande/vg_ms_grade_management/
 - `false`: Notificación activa
 - `true`: Notificación eliminada lógicamente
 
-## Ejemplos de JSON para Endpoints
+## Ejemplos de JSON para DTOs
 
 ### NotificationRequest (POST /notifications, PUT /notifications/{id})
 ```json
@@ -92,7 +233,7 @@ src/main/java/pe/edu/vallegrande/vg_ms_grade_management/
 }
 ```
 
-### NotificationResponse (GET /notifications, GET /notifications/{id}, etc.)
+### NotificationResponse (Respuestas de todos los endpoints)
 ```json
 {
   "id": "65d2a7f1b3e9c8a7b6c5d4e3",
@@ -107,47 +248,6 @@ src/main/java/pe/edu/vallegrande/vg_ms_grade_management/
   "deleted": false
 }
 ```
-
-### Ejemplo de Respuesta para GET /notifications (Lista de Notificaciones)
-```json
-[
-  {
-    "id": "65d2a7f1b3e9c8a7b6c5d4e3",
-    "recipientId": "4",
-    "recipientType": "Amelia Flores Ascencio",
-    "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.",
-    "notificationType": "Calificación Publicada",
-    "status": "Pendiente",
-    "channel": "Correo",
-    "createdAt": "2024-01-15T10:30:00",
-    "sentAt": null,
-    "deleted": false
-  },
-  {
-    "id": "65d2a7f1b3e9c8a7b6c5d4e4",
-    "recipientId": "4",
-    "recipientType": "Amelia Flores Ascencio",
-    "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido actualizada. Nueva calificación: 20.0/20 puntos.",
-    "notificationType": "Calificación Actualizada",
-    "status": "Pendiente",
-    "channel": "Correo",
-    "createdAt": "2024-01-15T11:00:00",
-    "sentAt": null,
-    "deleted": false
-  }
-]
-```
-
-### Ejemplo de Respuesta para GET /notifications/{id} (Notificación Única)
-```json
-{
-  "id": "65d2a7f1b3e9c8a7b6c5d4e3",
-  "recipientId": "4",
-  "recipientType": "Amelia Flores Ascencio",
-  "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.",
-  "notificationType": "Calificación Publicada",
-  "status": "Pendiente",
-  "channel": "Correo",
   "createdAt": "2024-01-15T10:30:00",
   "sentAt": null,
   "deleted": false

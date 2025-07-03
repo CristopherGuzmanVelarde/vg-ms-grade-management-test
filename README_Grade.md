@@ -67,51 +67,117 @@ Cuando se crea o actualiza una calificación, el sistema automáticamente genera
 
 ### Endpoints de Calificaciones (`/api/grades`)
 
-| Método | Path                                      | Descripción                                   | JSON de Request (Ejemplo) | JSON de Response (Ejemplo) |
-|--------|-------------------------------------------|-----------------------------------------------|---------------------------|----------------------------|
-| GET    | `/`                                       | Obtiene todas las calificaciones              | N/A                       | `[ { "id": "1", "studentId": "4", "courseId": "C001", "grade": 20.0, "deleted": false } ]` |
-| GET    | `/{id}`                                   | Obtiene una calificación por su ID            | N/A                       | `{ "id": "1", "studentId": "4", "courseId": "C001", "grade": 20.0, "deleted": false }` |
-| GET    | `/student/{studentId}`                    | Obtiene calificaciones por ID de estudiante   | N/A                       | `[ { "id": "1", "studentId": "4", "courseId": "C001", "grade": 20.0, "deleted": false } ]` |
-| GET    | `/course/{courseId}`                      | Obtiene calificaciones por ID de curso        | N/A                       | `[ { "id": "1", "studentId": "4", "courseId": "C001", "grade": 20.0, "deleted": false } ]` |
-| GET    | `/student/{studentId}/course/{courseId}`  | Obtiene calificaciones por ID de estudiante y curso | N/A                       | `{ "id": "1", "studentId": "4", "courseId": "C001", "grade": 20.0, "deleted": false }` |
-| **GET** | **`/{id}/notifications`**                 | **Obtiene notificaciones relacionadas con una calificación** | N/A | `[ { "id": "1", "recipientId": "4", "recipientType": "Amelia Flores Ascencio", "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido publicada. Obtuviste 20.0/20 puntos.", "notificationType": "Calificación Publicada", "status": "Pendiente", "channel": "Correo" } ]` |
-| POST   | `/`                                       | Crea una nueva calificación                   | `{ "studentId": "4", "courseId": "C001", "grade": 20.0 }` | `{ "id": "2", "studentId": "4", "courseId": "C001", "grade": 20.0, "deleted": false }` |
-| PUT    | `/{id}`                                   | Actualiza una calificación existente          | `{ "studentId": "4", "courseId": "C001", "grade": 20.0 }` | `{ "id": "1", "studentId": "4", "courseId": "C001", "grade": 20.0, "deleted": false }` |
-| DELETE | `/{id}`                                   | Elimina lógicamente una calificación          | N/A                       | `{ "id": "1", "studentId": "4", "courseId": "C001", "grade": 20.0, "deleted": true }` |
-| PUT    | `/{id}/restore`                           | Restaura una calificación eliminada lógicamente | N/A                       | `{ "id": "1", "studentId": "4", "courseId": "C001", "grade": 20.0, "deleted": false }` |
-| GET    | `/inactive`                               | Obtiene todas las calificaciones inactivas (eliminadas lógicamente) | N/A                       | `[ { "id": "3", "studentId": "4", "courseId": "C002", "grade": 8.5, "deleted": true } ]` |
+Los endpoints están organizados por método HTTP:
 
-## Ejemplos de JSON para Endpoints
+#### GET - Consultas
 
-### GradeRequest (POST /api/grades, PUT /api/grades/{id})
+##### GET `/api/grades` - Obtener todas las calificaciones
+**Descripción:** Obtiene todas las calificaciones activas (no eliminadas lógicamente)
+**Request:** No requiere cuerpo
+**Response:** Array de Grade
 ```json
-{
-  "studentId": "4",
-  "courseId": "C001",
-  "grade": 20.0,
-  "academicPeriod": "Bimester",
-  "evaluationType": "Examen",
-  "evaluationDate": "2024-01-15",
-  "remarks": "Excelente trabajo en el examen"
-}
+[
+  {
+    "id": "654321",
+    "studentId": "4",
+    "courseId": "C001",
+    "academicPeriod": "Bimester",
+    "evaluationType": "Examen",
+    "grade": 20.0,
+    "evaluationDate": "2024-01-15",
+    "remarks": "Excelente trabajo en el examen",
+    "deleted": false
+  }
+]
 ```
 
-### GradeResponse (GET /api/grades, GET /api/grades/{id}, etc.)
+##### GET `/api/grades/{id}` - Obtener una calificación por ID
+**Descripción:** Obtiene una calificación específica por su ID
+**Parámetros:** `id` (String) - ID de la calificación
+**Request:** No requiere cuerpo
+**Response:** Grade o 404 si no existe
 ```json
 {
   "id": "654321",
   "studentId": "4",
   "courseId": "C001",
-  "grade": 20.0,
   "academicPeriod": "Bimester",
   "evaluationType": "Examen",
+  "grade": 20.0,
   "evaluationDate": "2024-01-15",
   "remarks": "Excelente trabajo en el examen",
   "deleted": false
 }
 ```
 
-### Ejemplo de Respuesta para GET /api/grades/{id}/notifications (Notificaciones de Calificación)
+##### GET `/api/grades/student/{studentId}` - Obtener calificaciones por estudiante
+**Descripción:** Obtiene todas las calificaciones de un estudiante específico
+**Parámetros:** `studentId` (String) - ID del estudiante
+**Request:** No requiere cuerpo
+**Response:** Array de Grade
+```json
+[
+  {
+    "id": "654321",
+    "studentId": "4",
+    "courseId": "C001",
+    "academicPeriod": "Bimester",
+    "evaluationType": "Examen",
+    "grade": 20.0,
+    "evaluationDate": "2024-01-15",
+    "remarks": "Excelente trabajo",
+    "deleted": false
+  }
+]
+```
+
+##### GET `/api/grades/course/{courseId}` - Obtener calificaciones por curso
+**Descripción:** Obtiene todas las calificaciones de un curso específico
+**Parámetros:** `courseId` (String) - ID del curso
+**Request:** No requiere cuerpo
+**Response:** Array de Grade
+```json
+[
+  {
+    "id": "654321",
+    "studentId": "4",
+    "courseId": "C001",
+    "academicPeriod": "Bimester",
+    "evaluationType": "Examen",
+    "grade": 20.0,
+    "evaluationDate": "2024-01-15",
+    "remarks": "Excelente trabajo",
+    "deleted": false
+  }
+]
+```
+
+##### GET `/api/grades/student/{studentId}/course/{courseId}` - Obtener calificaciones por estudiante y curso
+**Descripción:** Obtiene todas las calificaciones de un estudiante en un curso específico
+**Parámetros:** `studentId` (String) - ID del estudiante, `courseId` (String) - ID del curso
+**Request:** No requiere cuerpo
+**Response:** Array de Grade
+```json
+[
+  {
+    "id": "654321",
+    "studentId": "4",
+    "courseId": "C001",
+    "academicPeriod": "Bimester",
+    "evaluationType": "Examen",
+    "grade": 20.0,
+    "evaluationDate": "2024-01-15",
+    "remarks": "Excelente trabajo",
+    "deleted": false
+  }
+]
+```
+
+##### GET `/api/grades/{id}/notifications` - Obtener notificaciones relacionadas con una calificación
+**Descripción:** Obtiene todas las notificaciones generadas para una calificación específica
+**Parámetros:** `id` (String) - ID de la calificación
+**Request:** No requiere cuerpo
+**Response:** Array de NotificationResponse
 ```json
 [
   {
@@ -123,92 +189,168 @@ Cuando se crea o actualiza una calificación, el sistema automáticamente genera
     "status": "Pendiente",
     "channel": "Correo",
     "createdAt": "2024-01-15T10:30:00",
-    "sentAt": null
-  },
-  {
-    "id": "65d2a7f1b3e9c8a7b6c5d4e4",
-    "recipientId": "4",
-    "recipientType": "Amelia Flores Ascencio",
-    "message": "Hola Amelia Flores Ascencio, tu calificación de Matemáticas ha sido actualizada. Nueva calificación: 20.0/20 puntos.",
-    "notificationType": "Calificación Actualizada",
-    "status": "Pendiente",
-    "channel": "Correo",
-    "createdAt": "2024-01-15T11:00:00",
-    "sentAt": null
+    "sentAt": null,
+    "deleted": false
   }
 ]
 ```
 
-### Ejemplo de Respuesta para GET /api/grades (Lista de Calificaciones)
+##### GET `/api/grades/inactive` - Obtener calificaciones eliminadas lógicamente
+**Descripción:** Obtiene todas las calificaciones eliminadas lógicamente (deleted=true)
+**Request:** No requiere cuerpo
+**Response:** Array de Grade con deleted=true
 ```json
 [
   {
-    "id": "654321",
-    "studentId": "4",
-    "courseId": "C001",
-    "grade": 20.0,
-    "academicPeriod": "Bimester",
-    "evaluationType": "Examen",
-    "evaluationDate": "2024-01-15",
-    "remarks": "Excelente trabajo en el examen",
-    "deleted": false
-  },
-  {
-    "id": "654322",
+    "id": "654323",
     "studentId": "4",
     "courseId": "C002",
-    "grade": 8.5,
     "academicPeriod": "Bimester",
     "evaluationType": "Examen",
+    "grade": 8.5,
     "evaluationDate": "2024-01-16",
     "remarks": "Necesita mejorar",
-    "deleted": false
+    "deleted": true
   }
 ]
 ```
 
-### Ejemplo de Respuesta para GET /api/grades/{id} (Calificación Única)
+#### POST - Creación
+
+##### POST `/api/grades` - Crear una nueva calificación
+**Descripción:** Crea una nueva calificación y genera automáticamente notificaciones
+**Request:** Grade (sin ID)
+```json
+{
+  "studentId": "4",
+  "courseId": "C001",
+  "academicPeriod": "Bimester",
+  "evaluationType": "Examen",
+  "grade": 20.0,
+  "evaluationDate": "2024-01-15",
+  "remarks": "Excelente trabajo en el examen"
+}
+```
+**Response (201 CREATED):** Grade creado
 ```json
 {
   "id": "654321",
   "studentId": "4",
   "courseId": "C001",
-  "grade": 20.0,
   "academicPeriod": "Bimester",
   "evaluationType": "Examen",
+  "grade": 20.0,
   "evaluationDate": "2024-01-15",
   "remarks": "Excelente trabajo en el examen",
   "deleted": false
 }
 ```
+**Notificaciones automáticas generadas:**
+- `Calificación Publicada` para el estudiante (con nombre real y curso real)
+- `Bajo Rendimiento` para padres (si grade < 11)
 
-### Ejemplo de Respuesta para DELETE /api/grades/{id} (Eliminación Lógica)
+#### PUT - Actualización
+
+##### PUT `/api/grades/{id}` - Actualizar una calificación existente
+**Descripción:** Actualiza una calificación existente y genera automáticamente notificaciones
+**Parámetros:** `id` (String) - ID de la calificación a actualizar
+**Request:** Grade (sin ID)
+```json
+{
+  "studentId": "4",
+  "courseId": "C001",
+  "academicPeriod": "Bimester",
+  "evaluationType": "Examen",
+  "grade": 18.0,
+  "evaluationDate": "2024-01-15",
+  "remarks": "Calificación corregida"
+}
+```
+**Response:** Grade actualizado
 ```json
 {
   "id": "654321",
   "studentId": "4",
   "courseId": "C001",
-  "grade": 20.0,
   "academicPeriod": "Bimester",
   "evaluationType": "Examen",
+  "grade": 18.0,
   "evaluationDate": "2024-01-15",
-  "remarks": "Excelente trabajo en el examen",
+  "remarks": "Calificación corregida",
+  "deleted": false
+}
+```
+**Notificaciones automáticas generadas:**
+- `Calificación Actualizada` para el estudiante (con nombre real y curso real)
+- `Bajo Rendimiento` para padres (si grade < 11)
+
+##### PUT `/api/grades/{id}/restore` - Restaurar una calificación eliminada
+**Descripción:** Restaura una calificación eliminada lógicamente
+**Parámetros:** `id` (String) - ID de la calificación a restaurar
+**Request:** No requiere cuerpo
+**Response:** Grade restaurado con deleted=false
+```json
+{
+  "id": "654321",
+  "studentId": "4",
+  "courseId": "C001",
+  "academicPeriod": "Bimester",
+  "evaluationType": "Examen",
+  "grade": 20.0,
+  "evaluationDate": "2024-01-15",
+  "remarks": "Excelente trabajo",
+  "deleted": false
+}
+```
+
+#### DELETE - Eliminación
+
+##### DELETE `/api/grades/{id}` - Eliminar lógicamente una calificación
+**Descripción:** Elimina lógicamente una calificación (marca como deleted=true)
+**Parámetros:** `id` (String) - ID de la calificación a eliminar
+**Request:** No requiere cuerpo
+**Response:** Grade eliminado con deleted=true
+```json
+{
+  "id": "654321",
+  "studentId": "4",
+  "courseId": "C001",
+  "academicPeriod": "Bimester",
+  "evaluationType": "Examen",
+  "grade": 20.0,
+  "evaluationDate": "2024-01-15",
+  "remarks": "Excelente trabajo",
   "deleted": true
 }
 ```
 
-### Ejemplo de Respuesta para PUT /api/grades/{id}/restore (Restauración)
+## Ejemplos de JSON para DTOs
+
+### Grade Request/Response (usado en POST y PUT)
 ```json
 {
   "id": "654321",
   "studentId": "4",
   "courseId": "C001",
-  "grade": 20.0,
   "academicPeriod": "Bimester",
   "evaluationType": "Examen",
+  "grade": 20.0,
   "evaluationDate": "2024-01-15",
   "remarks": "Excelente trabajo en el examen",
   "deleted": false
+}
+```
+
+### Grade Request para POST (sin ID)
+```json
+{
+  "studentId": "4",
+  "courseId": "C001",
+  "academicPeriod": "Bimester",
+  "evaluationType": "Examen",
+  "grade": 20.0,
+  "evaluationDate": "2024-01-15",
+  "remarks": "Excelente trabajo en el examen"
 }
 ```
 

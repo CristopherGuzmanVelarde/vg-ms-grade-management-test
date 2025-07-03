@@ -4,41 +4,59 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pe.edu.vallegrande.vg_ms_grade_management.application.service.GradeNotificationService;
 import pe.edu.vallegrande.vg_ms_grade_management.application.service.NotificationService;
-import pe.edu.vallegrande.vg_ms_grade_management.application.service.StudentService;
+import pe.edu.vallegrande.vg_ms_grade_management.infrastructure.client.StudentClient;
 import pe.edu.vallegrande.vg_ms_grade_management.application.service.CourseService;
 import pe.edu.vallegrande.vg_ms_grade_management.domain.model.Grade;
 import pe.edu.vallegrande.vg_ms_grade_management.domain.model.Notification;
-import pe.edu.vallegrande.vg_ms_grade_management.domain.model.Student;
 import pe.edu.vallegrande.vg_ms_grade_management.domain.model.Course;
 import reactor.core.publisher.Mono;
+import pe.edu.vallegrande.vg_ms_grade_management.infrastructure.dto.response.StudentDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Implementación del servicio de notificaciones transaccionales para calificaciones
- */
+
 @Service
 @RequiredArgsConstructor
 public class GradeNotificationServiceImpl implements GradeNotificationService {
 
+    private static final Logger logger = LoggerFactory.getLogger(GradeNotificationServiceImpl.class);
     private final NotificationService notificationService;
-    private final StudentService studentService;
+    private final StudentClient studentClient;
     private final CourseService courseService;
 
     @Override
     public Mono<Notification> generateGradePublishedNotification(Grade grade) {
+        logger.info("Generating grade published notification for grade: {}", grade);
+        logger.info("Student ID: {}, Course ID: {}", grade.getStudentId(), grade.getCourseId());
+        
         return Mono.zip(
-                studentService.findById(Long.valueOf(grade.getStudentId())),
+                studentClient.getStudentById(grade.getStudentId())
+                        .doOnNext(student -> logger.info("Successfully retrieved student: {}", student))
+                        .onErrorResume(e -> {
+                            logger.error("Error al obtener datos del estudiante desde el microservicio: ", e);
+                            return Mono.error(new RuntimeException("No se pudo obtener la información del estudiante", e));
+                        }),
                 courseService.findById(grade.getCourseId())
+                        .doOnNext(course -> logger.info("Successfully retrieved course: {}", course))
+                        .onErrorResume(e -> {
+                            logger.warn("Error al obtener datos del curso, usando courseId: {}", grade.getCourseId());
+                            return Mono.just(createDefaultCourse(grade.getCourseId()));
+                        })
+                        .defaultIfEmpty(createDefaultCourse(grade.getCourseId()))
         ).flatMap(tuple -> {
-            Student student = tuple.getT1();
+            StudentDTO student = tuple.getT1();
             Course course = tuple.getT2();
-            String nombreEstudiante = student != null ? student.getFirstName() + " " + student.getLastName() : grade.getStudentId();
-            String nombreCurso = course != null ? course.getName() : grade.getCourseId();
+            
+            String nombreEstudiante = safeConcat(student.getFirstName(), student.getLastName());
+            String nombreCurso = course != null ? course.getName() : "Curso " + grade.getCourseId().substring(0, Math.min(8, grade.getCourseId().length()));
+            
             String mensaje = String.format(
                 "Hola %s, tu calificación de %s ha sido publicada. Obtuviste %.1f/20 puntos.",
                 nombreEstudiante,
                 nombreCurso,
                 grade.getGrade()
             );
+            
             Notification notification = Notification.builder()
                     .recipientId(grade.getStudentId())
                     .recipientType(nombreEstudiante)
@@ -47,26 +65,50 @@ public class GradeNotificationServiceImpl implements GradeNotificationService {
                     .status("Pendiente")
                     .channel("Correo")
                     .build();
-            return notificationService.save(notification);
+                    
+            logger.info("Intentando guardar notificación: {}", notification);
+            return notificationService.save(notification)
+                .doOnSuccess(n -> logger.info("Notificación guardada exitosamente: {}", n))
+                .doOnError(e -> logger.error("Error al guardar la notificación: ", e));
+        }).onErrorResume(e -> {
+            logger.error("Error completo en generateGradePublishedNotification: ", e);
+            return Mono.error(new RuntimeException("Error al generar notificación de calificación publicada", e));
         });
     }
 
     @Override
     public Mono<Notification> generateGradeUpdatedNotification(Grade grade) {
+        logger.info("Generating grade updated notification for grade: {}", grade);
+        logger.info("Student ID: {}, Course ID: {}", grade.getStudentId(), grade.getCourseId());
+        
         return Mono.zip(
-                studentService.findById(Long.valueOf(grade.getStudentId())),
+                studentClient.getStudentById(grade.getStudentId())
+                        .doOnNext(student -> logger.info("Successfully retrieved student: {}", student))
+                        .onErrorResume(e -> {
+                            logger.error("Error al obtener datos del estudiante desde el microservicio: ", e);
+                            return Mono.error(new RuntimeException("No se pudo obtener la información del estudiante", e));
+                        }),
                 courseService.findById(grade.getCourseId())
+                        .doOnNext(course -> logger.info("Successfully retrieved course: {}", course))
+                        .onErrorResume(e -> {
+                            logger.warn("Error al obtener datos del curso, usando courseId: {}", grade.getCourseId());
+                            return Mono.just(createDefaultCourse(grade.getCourseId()));
+                        })
+                        .defaultIfEmpty(createDefaultCourse(grade.getCourseId()))
         ).flatMap(tuple -> {
-            Student student = tuple.getT1();
+            StudentDTO student = tuple.getT1();
             Course course = tuple.getT2();
-            String nombreEstudiante = student != null ? student.getFirstName() + " " + student.getLastName() : grade.getStudentId();
-            String nombreCurso = course != null ? course.getName() : grade.getCourseId();
+            
+            String nombreEstudiante = safeConcat(student.getFirstName(), student.getLastName());
+            String nombreCurso = course != null ? course.getName() : "Curso " + grade.getCourseId().substring(0, Math.min(8, grade.getCourseId().length()));
+            
             String mensaje = String.format(
                 "Hola %s, tu calificación de %s ha sido actualizada. Nueva calificación: %.1f/20 puntos.",
                 nombreEstudiante,
                 nombreCurso,
                 grade.getGrade()
             );
+            
             Notification notification = Notification.builder()
                     .recipientId(grade.getStudentId())
                     .recipientType(nombreEstudiante)
@@ -75,7 +117,14 @@ public class GradeNotificationServiceImpl implements GradeNotificationService {
                     .status("Pendiente")
                     .channel("Correo")
                     .build();
-            return notificationService.save(notification);
+                    
+            logger.info("Intentando guardar notificación: {}", notification);
+            return notificationService.save(notification)
+                .doOnSuccess(n -> logger.info("Notificación guardada exitosamente: {}", n))
+                .doOnError(e -> logger.error("Error al guardar la notificación: ", e));
+        }).onErrorResume(e -> {
+            logger.error("Error completo en generateGradeUpdatedNotification: ", e);
+            return Mono.error(new RuntimeException("Error al generar notificación de calificación actualizada", e));
         });
     }
 
@@ -132,4 +181,22 @@ public class GradeNotificationServiceImpl implements GradeNotificationService {
         // En una implementación real, esto consultaría StudentService
         return "P" + studentId;
     }
-} 
+
+    // Método utilitario para concatenar nombres de forma segura
+    private String safeConcat(String first, String last) {
+        if (first == null && last == null) return "";
+        if (first == null) return last;
+        if (last == null) return first;
+        return first + " " + last;
+    }
+    
+    // Método helper para crear un Course por defecto cuando el servicio no está disponible
+    private Course createDefaultCourse(String courseId) {
+        return Course.builder()
+                .id(courseId)
+                .name("Curso " + courseId.substring(0, Math.min(8, courseId.length())))
+                .teacher("Profesor")
+                .deleted(false)
+                .build();
+    }
+}

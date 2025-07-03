@@ -10,6 +10,7 @@ import pe.edu.vallegrande.vg_ms_grade_management.domain.model.Grade;
 import pe.edu.vallegrande.vg_ms_grade_management.infrastructure.dto.response.NotificationResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * REST controller for managing grades.
@@ -114,7 +115,21 @@ public class GradeRest {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Grade> createGrade(@RequestBody Grade grade) {
-        return gradeService.save(grade);
+        // Validar que los campos requeridos no sean nulos o vacíos
+        if (grade.getStudentId() == null || grade.getStudentId().trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El studentId es requerido");
+        }
+        if (grade.getCourseId() == null || grade.getCourseId().trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El courseId es requerido");
+        }
+        if (grade.getGrade() == null || grade.getGrade() < 0 || grade.getGrade() > 20) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La calificación debe estar entre 0 y 20");
+        }
+        
+        return gradeService.save(grade)
+            .onErrorResume(e -> {
+                return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ocurrió un error inesperado al guardar la calificación: " + e.getMessage()));
+            });
     }
 
     /**

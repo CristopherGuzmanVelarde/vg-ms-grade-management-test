@@ -1,6 +1,8 @@
 package pe.edu.vallegrande.vg_ms_grade_management.application.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pe.edu.vallegrande.vg_ms_grade_management.application.service.CourseService;
 import pe.edu.vallegrande.vg_ms_grade_management.domain.model.Course;
@@ -16,6 +18,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
 
@@ -35,8 +38,14 @@ public class CourseServiceImpl implements CourseService {
      * @return Mono con el curso encontrado
      */
     public Mono<Course> findById(String id) {
+        logger.info("Buscando curso con ID: {}", id);
         return courseRepository.findById(id)
-                .map(courseMapper::toDomain);
+                .doOnNext(doc -> logger.info("Curso encontrado en BD: {}", doc))
+                .map(courseMapper::toDomain)
+                .doOnNext(course -> logger.info("Curso mapeado: {}", course))
+                .filter(course -> course.getDeleted() == null || !course.getDeleted())
+                .doOnNext(course -> logger.info("Curso después del filtro: {}", course))
+                .switchIfEmpty(Mono.fromRunnable(() -> logger.warn("No se encontró curso con ID: {}", id)));
     }
 
     /**

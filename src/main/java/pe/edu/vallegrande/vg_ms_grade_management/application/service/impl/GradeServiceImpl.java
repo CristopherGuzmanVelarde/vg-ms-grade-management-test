@@ -1,6 +1,8 @@
 package pe.edu.vallegrande.vg_ms_grade_management.application.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pe.edu.vallegrande.vg_ms_grade_management.application.service.GradeService;
 import pe.edu.vallegrande.vg_ms_grade_management.application.service.GradeNotificationService;
@@ -20,6 +22,7 @@ public class GradeServiceImpl implements GradeService {
     private final GradeRepository gradeRepository;
     private final GradeMapper gradeMapper;
     private final GradeNotificationService gradeNotificationService;
+    private static final Logger logger = LoggerFactory.getLogger(GradeServiceImpl.class);
 
     /**
      * Obtiene todas las calificaciones no eliminadas
@@ -90,9 +93,19 @@ public class GradeServiceImpl implements GradeService {
      */
     public Mono<Grade> save(Grade grade) {
         grade.setDeleted(false);
+        logger.info("Guardando calificación: {}", grade);
         return gradeRepository.save(gradeMapper.toDocument(grade))
                 .map(gradeMapper::toDomain)
-                .flatMap(savedGrade -> gradeNotificationService.processGradeNotifications(savedGrade, true));
+                .doOnNext(savedGrade -> logger.info("Calificación guardada exitosamente: {}", savedGrade))
+                .flatMap(savedGrade -> {
+                    logger.info("Iniciando proceso de notificaciones para calificación: {}", savedGrade.getId());
+                    return gradeNotificationService.processGradeNotifications(savedGrade, true)
+                        .doOnSuccess(result -> logger.info("Notificaciones procesadas exitosamente para calificación: {}", result.getId()))
+                        .onErrorResume(e -> {
+                            logger.error("Error al generar la notificación para calificación {}: ", savedGrade.getId(), e);
+                            return Mono.just(savedGrade);
+                        });
+                });
     }
 
     /**
