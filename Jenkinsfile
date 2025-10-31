@@ -1,12 +1,9 @@
 pipeline {
     agent any
     
-    tools {
-        maven 'Maven-3.9'  // Ajustar según tu configuración en Jenkins
-        jdk 'JDK-17'       // Ajustar según tu configuración en Jenkins
-    }
-    
     environment {
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
         JAVA_TOOL_OPTIONS = '-Dfile.encoding=UTF-8'
         MAVEN_OPTS = '-Xmx512m'
     }
