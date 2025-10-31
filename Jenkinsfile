@@ -60,31 +60,31 @@ pipeline {
                             if exist "C:\\Program Files\\Java\\jdk-17" (
                                 set "JAVA_HOME=C:\\Program Files\\Java\\jdk-17"
                                 set "JAVA_FOUND=1"
-                                echo [OK] Encontrado en Program Files\Java\jdk-17
+                                echo [OK] Encontrado en Program Files\\Java\\jdk-17
                             )
                             
                             if exist "C:\\Program Files\\Java\\jdk-17.0.10" (
                                 set "JAVA_HOME=C:\\Program Files\\Java\\jdk-17.0.10"
                                 set "JAVA_FOUND=1"
-                                echo [OK] Encontrado en Program Files\Java\jdk-17.0.10
+                                echo [OK] Encontrado en Program Files\\Java\\jdk-17.0.10
                             )
                             
                             if exist "C:\\Program Files\\OpenJDK\\jdk-17" (
                                 set "JAVA_HOME=C:\\Program Files\\OpenJDK\\jdk-17"
                                 set "JAVA_FOUND=1"
-                                echo [OK] Encontrado en Program Files\OpenJDK\jdk-17
+                                echo [OK] Encontrado en Program Files\\OpenJDK\\jdk-17
                             )
                             
                             if exist "C:\\Program Files\\Eclipse Adoptium\\jdk-17" (
                                 set "JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-17"
                                 set "JAVA_FOUND=1"
-                                echo [OK] Encontrado en Program Files\Eclipse Adoptium\jdk-17
+                                echo [OK] Encontrado en Program Files\\Eclipse Adoptium\\jdk-17
                             )
                             
                             if exist "C:\\Program Files\\Microsoft\\jdk-17" (
                                 set "JAVA_HOME=C:\\Program Files\\Microsoft\\jdk-17"
                                 set "JAVA_FOUND=1"
-                                echo [OK] Encontrado en Program Files\Microsoft\jdk-17
+                                echo [OK] Encontrado en Program Files\\Microsoft\\jdk-17
                             )
                             
                             if "%JAVA_FOUND%"=="0" (
