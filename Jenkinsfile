@@ -2,8 +2,6 @@ pipeline {
     agent any
     
     environment {
-        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
         JAVA_TOOL_OPTIONS = '-Dfile.encoding=UTF-8'
         MAVEN_OPTS = '-Xmx512m'
     }
@@ -21,9 +19,42 @@ pipeline {
                 echo '🧹 Limpiando y compilando el proyecto...'
                 script {
                     if (isUnix()) {
-                        sh 'mvn clean compile'
+                        sh '''
+                            # Configurar JAVA_HOME para Linux
+                            if [ -d "/usr/lib/jvm/java-17-openjdk-amd64" ]; then
+                                export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+                            elif [ -d "/usr/lib/jvm/java-17" ]; then
+                                export JAVA_HOME=/usr/lib/jvm/java-17
+                            fi
+                            export PATH=$JAVA_HOME/bin:$PATH
+                            
+                            echo "Java version:"
+                            java -version
+                            mvn clean compile
+                        '''
                     } else {
-                        bat 'mvn clean compile'
+                        bat '''
+                            @echo off
+                            REM Buscar Java 17 en Windows
+                            if exist "C:\\Program Files\\Java\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\Java\\jdk-17"
+                            ) else if exist "C:\\Program Files\\OpenJDK\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\OpenJDK\\jdk-17"
+                            ) else if exist "C:\\Program Files\\Eclipse Adoptium\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-17"
+                            ) else if exist "C:\\Program Files\\Microsoft\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\Microsoft\\jdk-17"
+                            ) else (
+                                echo ERROR: No se encontro Java 17
+                                echo Por favor instala Java 17 o configura JAVA_HOME manualmente
+                                exit /b 1
+                            )
+                            
+                            set "PATH=%JAVA_HOME%\\bin;%PATH%"
+                            echo Java version:
+                            java -version
+                            mvn clean compile
+                        '''
                     }
                 }
             }
@@ -44,10 +75,31 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
+                            # Configurar JAVA_HOME para Linux
+                            if [ -d "/usr/lib/jvm/java-17-openjdk-amd64" ]; then
+                                export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+                            elif [ -d "/usr/lib/jvm/java-17" ]; then
+                                export JAVA_HOME=/usr/lib/jvm/java-17
+                            fi
+                            export PATH=$JAVA_HOME/bin:$PATH
+                            
                             mvn test -Dtest=GradeServiceImplTest#registerBatchGrades_Success,GradeServiceImplTest#getClassroomPeriodReport_Success,GradeServiceImplTest#registerGrade_WithNullObservations_Success
                         '''
                     } else {
                         bat '''
+                            @echo off
+                            REM Configurar JAVA_HOME para Windows
+                            if exist "C:\\Program Files\\Java\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\Java\\jdk-17"
+                            ) else if exist "C:\\Program Files\\OpenJDK\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\OpenJDK\\jdk-17"
+                            ) else if exist "C:\\Program Files\\Eclipse Adoptium\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-17"
+                            ) else if exist "C:\\Program Files\\Microsoft\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\Microsoft\\jdk-17"
+                            )
+                            set "PATH=%JAVA_HOME%\\bin;%PATH%"
+                            
                             mvn test -Dtest=GradeServiceImplTest#registerBatchGrades_Success,GradeServiceImplTest#getClassroomPeriodReport_Success,GradeServiceImplTest#registerGrade_WithNullObservations_Success
                         '''
                     }
@@ -67,9 +119,34 @@ pipeline {
                 echo '📈 Generando reporte de cobertura con JaCoCo...'
                 script {
                     if (isUnix()) {
-                        sh 'mvn jacoco:report'
+                        sh '''
+                            # Configurar JAVA_HOME para Linux
+                            if [ -d "/usr/lib/jvm/java-17-openjdk-amd64" ]; then
+                                export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+                            elif [ -d "/usr/lib/jvm/java-17" ]; then
+                                export JAVA_HOME=/usr/lib/jvm/java-17
+                            fi
+                            export PATH=$JAVA_HOME/bin:$PATH
+                            
+                            mvn jacoco:report
+                        '''
                     } else {
-                        bat 'mvn jacoco:report'
+                        bat '''
+                            @echo off
+                            REM Configurar JAVA_HOME para Windows
+                            if exist "C:\\Program Files\\Java\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\Java\\jdk-17"
+                            ) else if exist "C:\\Program Files\\OpenJDK\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\OpenJDK\\jdk-17"
+                            ) else if exist "C:\\Program Files\\Eclipse Adoptium\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-17"
+                            ) else if exist "C:\\Program Files\\Microsoft\\jdk-17" (
+                                set "JAVA_HOME=C:\\Program Files\\Microsoft\\jdk-17"
+                            )
+                            set "PATH=%JAVA_HOME%\\bin;%PATH%"
+                            
+                            mvn jacoco:report
+                        '''
                     }
                 }
                 jacoco(
