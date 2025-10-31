@@ -1,0 +1,38 @@
+# Configuración para tests
+server:
+  port: 0  # Puerto aleatorio para tests
+
+spring:
+  application:
+    name: vg-ms-grade-management-test
+  
+  data:
+    mongodb:
+      # Usar MongoDB embebido o contenedor para tests
+      uri: mongodb://localhost:27017/grade_management_test
+      database: grade_management_test
+  
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+logging:
+  level:
+    root: WARN
+    pe.edu.vallegrande.vg_ms_grade_management: DEBUG
+
+microservices:
+  students:
+    url: http://localhost:8101/api/v1/students
+  courses:
+    url: http://localhost:8102/api/v1/courses
+  academic:
+    url: http://localhost:8103/api/v1/academic
+
+validation:
+  teacher:
+    verify-assignment: false
+  student:
+    verify-existence: false
+  course:
+    verify-existence: false

@@ -1,0 +1,450 @@
+{
+	"info": {
+		"_postman_id": "grade-management-v8",
+		"name": "Grade Management API v8.0 - TEACHER",
+		"description": "Sistema de Calificaciones MINEDU v8.0 - Exclusivo para Profesores",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Registrar Calificación Individual",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "550e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Roles",
+						"value": "teacher",
+						"type": "text"
+					},
+					{
+						"key": "X-Institution-Id",
+						"value": "660e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"studentId\": \"student-uuid-123\",\n  \"courseId\": \"course-uuid-mat\",\n  \"classroomId\": \"classroom-uuid-001\",\n  \"periodId\": \"period-uuid-001\",\n  \"typePeriod\": \"III_TRIMESTRE\",\n  \"competenceName\": \"Resuelve problemas de cantidad\",\n  \"capacityEvaluated\": \"Traduce cantidades a expresiones numéricas\",\n  \"gradeScale\": \"A\",\n  \"numericGrade\": 16.5,\n  \"evaluationType\": \"FORMATIVA\",\n  \"evaluationDate\": \"2025-10-28\",\n  \"observations\": \"Muy buen desempeño en operaciones con fracciones\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8104/api/v1/grades/teacher/register-grade",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8104",
+					"path": [
+						"api",
+						"v1",
+						"grades",
+						"teacher",
+						"register-grade"
+					]
+				},
+				"description": "Registra una calificación individual por competencia MINEDU"
+			},
+			"response": []
+		},
+		{
+			"name": "2. Registrar Calificaciones en Lote",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "550e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Roles",
+						"value": "teacher",
+						"type": "text"
+					},
+					{
+						"key": "X-Institution-Id",
+						"value": "660e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"grades\": [\n    {\n      \"studentId\": \"student-uuid-001\",\n      \"courseId\": \"course-uuid-mat\",\n      \"classroomId\": \"classroom-uuid-001\",\n      \"periodId\": \"period-uuid-001\",\n      \"typePeriod\": \"III_TRIMESTRE\",\n      \"competenceName\": \"Resuelve problemas de cantidad\",\n      \"capacityEvaluated\": \"Traduce cantidades a expresiones numéricas\",\n      \"gradeScale\": \"A\",\n      \"numericGrade\": 16.0,\n      \"evaluationType\": \"SUMATIVA\",\n      \"evaluationDate\": \"2025-10-28\"\n    },\n    {\n      \"studentId\": \"student-uuid-002\",\n      \"courseId\": \"course-uuid-mat\",\n      \"classroomId\": \"classroom-uuid-001\",\n      \"periodId\": \"period-uuid-001\",\n      \"typePeriod\": \"III_TRIMESTRE\",\n      \"competenceName\": \"Resuelve problemas de cantidad\",\n      \"capacityEvaluated\": \"Traduce cantidades a expresiones numéricas\",\n      \"gradeScale\": \"B\",\n      \"numericGrade\": 13.5,\n      \"evaluationType\": \"SUMATIVA\",\n      \"evaluationDate\": \"2025-10-28\"\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8104/api/v1/grades/teacher/register-batch-grades",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8104",
+					"path": [
+						"api",
+						"v1",
+						"grades",
+						"teacher",
+						"register-batch-grades"
+					]
+				},
+				"description": "Registra múltiples calificaciones en una sola operación"
+			},
+			"response": []
+		},
+		{
+			"name": "3. Actualizar Calificación",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Id",
+						"value": "550e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Roles",
+						"value": "teacher",
+						"type": "text"
+					},
+					{
+						"key": "X-Institution-Id",
+						"value": "660e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"competenceName\": \"Resuelve problemas de cantidad\",\n  \"capacityEvaluated\": \"Traduce cantidades a expresiones numéricas\",\n  \"gradeScale\": \"AD\",\n  \"numericGrade\": 18.5,\n  \"evaluationType\": \"SUMATIVA\",\n  \"evaluationDate\": \"2025-10-28\",\n  \"observations\": \"Excelente desempeño, superó las expectativas\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8104/api/v1/grades/teacher/update-grade/:gradeId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8104",
+					"path": [
+						"api",
+						"v1",
+						"grades",
+						"teacher",
+						"update-grade",
+						":gradeId"
+					],
+					"variable": [
+						{
+							"key": "gradeId",
+							"value": "grade-uuid-001",
+							"description": "ID de la calificación a actualizar"
+						}
+					]
+				},
+				"description": "Actualiza una calificación existente. Solo se pueden editar los 7 campos: competenceName, capacityEvaluated, gradeScale, numericGrade, evaluationType, evaluationDate y observations. Los IDs de referencia (studentId, courseId, classroomId, periodId, typePeriod) no se pueden modificar ya que definen la identidad de la calificación."
+			},
+			"response": []
+		},
+		{
+			"name": "4. Ver Mis Calificaciones",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-User-Id",
+						"value": "550e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Roles",
+						"value": "teacher",
+						"type": "text"
+					},
+					{
+						"key": "X-Institution-Id",
+						"value": "660e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8104/api/v1/grades/teacher/my-grades",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8104",
+					"path": [
+						"api",
+						"v1",
+						"grades",
+						"teacher",
+						"my-grades"
+					]
+				},
+				"description": "Obtiene todas las calificaciones registradas por el teacher actual"
+			},
+			"response": []
+		},
+		{
+			"name": "5. Reporte Consolidado por Aula",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-User-Id",
+						"value": "550e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Roles",
+						"value": "teacher",
+						"type": "text"
+					},
+					{
+						"key": "X-Institution-Id",
+						"value": "660e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8104/api/v1/grades/teacher/classroom/:classroomId/period/:periodId/type/:typePeriod/report",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8104",
+					"path": [
+						"api",
+						"v1",
+						"grades",
+						"teacher",
+						"classroom",
+						":classroomId",
+						"period",
+						":periodId",
+						"type",
+						":typePeriod",
+						"report"
+					],
+					"variable": [
+						{
+							"key": "classroomId",
+							"value": "classroom-uuid-001",
+							"description": "ID del aula"
+						},
+						{
+							"key": "periodId",
+							"value": "period-uuid-001",
+							"description": "ID del período académico"
+						},
+						{
+							"key": "typePeriod",
+							"value": "III_TRIMESTRE",
+							"description": "Tipo de período (I_BIMESTRE, II_BIMESTRE, III_TRIMESTRE, etc.)"
+						}
+					]
+				},
+				"description": "Genera reporte consolidado de calificaciones por aula en un período específico"
+			},
+			"response": []
+		},
+		{
+			"name": "6. Historial de Estudiante",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-User-Id",
+						"value": "550e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Roles",
+						"value": "teacher",
+						"type": "text"
+					},
+					{
+						"key": "X-Institution-Id",
+						"value": "660e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8104/api/v1/grades/teacher/student/:studentId/grades",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8104",
+					"path": [
+						"api",
+						"v1",
+						"grades",
+						"teacher",
+						"student",
+						":studentId",
+						"grades"
+					],
+					"variable": [
+						{
+							"key": "studentId",
+							"value": "student-uuid-123",
+							"description": "ID del estudiante"
+						}
+					]
+				},
+				"description": "Consulta todas las calificaciones de un estudiante registradas por el teacher"
+			},
+			"response": []
+		},
+		{
+			"name": "7. Eliminar Calificación (Lógico)",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-User-Id",
+						"value": "550e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Roles",
+						"value": "teacher",
+						"type": "text"
+					},
+					{
+						"key": "X-Institution-Id",
+						"value": "660e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8104/api/v1/grades/teacher/delete-grade/:gradeId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8104",
+					"path": [
+						"api",
+						"v1",
+						"grades",
+						"teacher",
+						"delete-grade",
+						":gradeId"
+					],
+					"variable": [
+						{
+							"key": "gradeId",
+							"value": "grade-uuid-001",
+							"description": "ID de la calificación a eliminar lógicamente"
+						}
+					]
+				},
+				"description": "Realiza eliminación lógica cambiando el estado a I=Inactive. Solo el teacher propietario puede eliminar."
+			},
+			"response": []
+		},
+		{
+			"name": "8. Restaurar Calificación",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "X-User-Id",
+						"value": "550e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					},
+					{
+						"key": "X-User-Roles",
+						"value": "teacher",
+						"type": "text"
+					},
+					{
+						"key": "X-Institution-Id",
+						"value": "660e8400-e29b-41d4-a716-446655440000",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8104/api/v1/grades/teacher/restore-grade/:gradeId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8104",
+					"path": [
+						"api",
+						"v1",
+						"grades",
+						"teacher",
+						"restore-grade",
+						":gradeId"
+					],
+					"variable": [
+						{
+							"key": "gradeId",
+							"value": "grade-uuid-001",
+							"description": "ID de la calificación a restaurar"
+						}
+					]
+				},
+				"description": "Restaura una calificación eliminada cambiando el estado de I=Inactive a A=Active. Solo el teacher propietario puede restaurar."
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8104",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "550e8400-e29b-41d4-a716-446655440000",
+			"type": "string"
+		},
+		{
+			"key": "userRoles",
+			"value": "teacher",
+			"type": "string"
+		},
+		{
+			"key": "institutionId",
+			"value": "660e8400-e29b-41d4-a716-446655440000",
+			"type": "string"
+		}
+	]
+}

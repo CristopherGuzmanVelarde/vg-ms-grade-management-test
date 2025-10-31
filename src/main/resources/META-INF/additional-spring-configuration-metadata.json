@@ -1,5 +1,57 @@
-{"properties": [{
-  "name": "students.service.url",
-  "type": "java.lang.String",
-  "description": "A description for 'students.service.url'"
-}]}
+{
+  "properties": [
+    {
+      "name": "students.service.url",
+      "type": "java.lang.String",
+      "description": "URL del microservicio de gestión de estudiantes"
+    },
+    {
+      "name": "courses.service.url",
+      "type": "java.lang.String",
+      "description": "URL del microservicio de gestión de cursos"
+    },
+    {
+      "name": "academic.service.url",
+      "type": "java.lang.String",
+      "description": "URL del microservicio de gestión académica (asignaciones)"
+    },
+    {
+      "name": "validation.teacher.verify-assignment",
+      "type": "java.lang.Boolean",
+      "description": "Si debe validar que el profesor tenga asignación al aula antes de registrar calificaciones",
+      "defaultValue": false
+    },
+    {
+      "name": "validation.student.verify-existence",
+      "type": "java.lang.Boolean",
+      "description": "Si debe validar la existencia del estudiante en el microservicio de estudiantes",
+      "defaultValue": false
+    },
+    {
+      "name": "validation.course.verify-existence",
+      "type": "java.lang.Boolean",
+      "description": "Si debe validar la existencia del curso en el microservicio de cursos",
+      "defaultValue": false
+    },
+    {
+      "name": "info.app.name",
+      "type": "java.lang.String",
+      "description": "Nombre de la aplicación"
+    },
+    {
+      "name": "info.app.description",
+      "type": "java.lang.String",
+      "description": "Descripción de la aplicación"
+    },
+    {
+      "name": "info.app.version",
+      "type": "java.lang.String",
+      "description": "Versión de la aplicación basada en estándar MINEDU"
+    },
+    {
+      "name": "info.app.role",
+      "type": "java.lang.String",
+      "description": "Rol exclusivo del microservicio"
+    }
+  ]
+}

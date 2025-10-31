@@ -1,0 +1,10 @@
+services:
+  cristopherguzman-vg-ms-grade-management:
+    image: cristopherguzman/vg-ms-grade-management:1.0
+    environment:
+      SERVER_PORT: 8104
+    networks:
+      - net-prs2
+    mem_limit: 256m
+    mem_reservation: 128m
+    cpus: 0.4
