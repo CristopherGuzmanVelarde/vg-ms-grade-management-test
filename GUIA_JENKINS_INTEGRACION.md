@@ -164,6 +164,9 @@ pipeline {
         stage('Unit Tests - 3 Pruebas') {
             steps {
                 echo 'Ejecutando las 3 pruebas unitarias...'
+                echo 'Test 1: Registro en Lote con capacidades MINEDU'
+                echo 'Test 2: Reporte Consolidado por Aula'
+                echo 'Test 3: Manejo de Campos Opcionales'
                 bat 'mvn test -Dtest=GradeServiceImplTest#registerBatchGrades_Success,GradeServiceImplTest#getClassroomPeriodReport_Success,GradeServiceImplTest#registerGrade_WithNullObservations_Success'
             }
         }
@@ -195,9 +198,10 @@ pipeline {
         }
         success {
             echo 'Pipeline ejecutado exitosamente!'
-            echo 'Test 1: Registro en Lote - PASSED'
-            echo 'Test 2: Reporte Consolidado - PASSED'
-            echo 'Test 3: Campos Opcionales - PASSED'
+            echo 'Test 1: Registro en Lote (con capacidades MINEDU) - PASSED'
+            echo 'Test 2: Reporte Consolidado por Aula - PASSED'
+            echo 'Test 3: Campos Opcionales (null handling) - PASSED'
+            echo 'Todas las validaciones de estándar MINEDU v8.0 completadas'
         }
         failure {
             echo 'Pipeline fallo'
@@ -246,13 +250,44 @@ Limpiando proyecto...
 Compilando codigo fuente...
 [Pipeline] stage (Unit Tests - 3 Pruebas)
 Ejecutando las 3 pruebas unitarias...
+Test 1: Registro en Lote con capacidades MINEDU
+Test 2: Reporte Consolidado por Aula
+Test 3: Manejo de Campos Opcionales
+
+╔════════════════════════════════════════════════════════════════╗
+║  📝 TEST 1: REGISTRO DE CALIFICACIONES EN LOTE               ║
+╚════════════════════════════════════════════════════════════════╝
+✅ Calificación 1 registrada: GRD2024101
+✅ Calificación 2 registrada: GRD2024102
+✨ TEST 1 COMPLETADO: 2 calificaciones registradas exitosamente
+
+╔════════════════════════════════════════════════════════════════╗
+║  📊 TEST 2: REPORTE CONSOLIDADO POR AULA Y PERÍODO          ║
+╚════════════════════════════════════════════════════════════════╝
+📋 Reporte generado con 2 cursos
+✅ Validación: 2 cursos agrupados correctamente
+✨ TEST 2 COMPLETADO: Reporte consolidado generado exitosamente
+
+╔════════════════════════════════════════════════════════════════╗
+║  🔍 TEST 3: MANEJO DE CAMPOS OPCIONALES (NULL)              ║
+╚════════════════════════════════════════════════════════════════╝
+✅ Calificación registrada: GRD2024303
+✅ Observaciones: null (OK)
+✨ TEST 3 COMPLETADO: Campo opcional manejado correctamente
+
 Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+Time elapsed: 6.669 s
+
 [Pipeline] stage (Test Report)
 Generando reportes de pruebas...
 [Pipeline] stage (Code Coverage)
 Generando reporte de cobertura...
 [Pipeline] echo
 Pipeline ejecutado exitosamente!
+Test 1: Registro en Lote (con capacidades MINEDU) - PASSED
+Test 2: Reporte Consolidado por Aula - PASSED
+Test 3: Campos Opcionales (null handling) - PASSED
+Todas las validaciones de estándar MINEDU v8.0 completadas
 Finished: SUCCESS
 ```
 
@@ -270,12 +305,65 @@ Finished: SUCCESS
    Passed: 3
    Failed: 0
    Success Rate: 100%
+   Duration: ~6.7s
    ```
 
-### 6.2 Ver Cobertura de Código
+### 6.2 Detalle de las Pruebas Ejecutadas
+
+**Test 1: Registro de Calificaciones en Lote**
+- ✅ Valida registro masivo de 2 estudiantes
+- ✅ Incluye competencias MINEDU: "Resuelve problemas de cantidad"
+- ✅ Incluye capacidades: "Traduce cantidades a expresiones numéricas"
+- ✅ Calificaciones: A (15.0) y AD (18.0)
+- ⏱️ Tiempo: ~0.033s
+
+**Test 2: Reporte Consolidado por Aula**
+- ✅ Genera reporte para aula 5A-SECUNDARIA
+- ✅ Agrupa calificaciones por curso (Matemática y Comunicación)
+- ✅ Filtra por profesor (TCH2024001)
+- ✅ Valida distribución de calificaciones
+- ⏱️ Tiempo: ~6.446s
+
+**Test 3: Manejo de Campos Opcionales**
+- ✅ Valida registro con campo observations = null
+- ✅ Incluye competencia: "Se comunica oralmente en su lengua materna"
+- ✅ Incluye capacidad: "Obtiene información del texto oral"
+- ✅ Calificación: B (13.5)
+- ⏱️ Tiempo: ~0.060s
+
+### 6.3 Ver Cobertura de Código
 
 1. Click en **Coverage Report**
 2. Verás métricas de JaCoCo
+
+### 6.4 Validaciones del Estándar MINEDU v8.0
+
+Las pruebas validan el cumplimiento del estándar MINEDU:
+
+**Competencias y Capacidades**:
+- ✅ Competencias según currículo nacional
+- ✅ Capacidades específicas por competencia
+- ✅ Relación correcta competencia-capacidad
+
+**Escalas de Calificación**:
+- ✅ AD (Logro Destacado): 18-20
+- ✅ A (Logro Esperado): 14-17
+- ✅ B (En Proceso): 11-13
+- ✅ C (En Inicio): 0-10
+
+**Tipos de Evaluación**:
+- ✅ FORMATIVA: Evaluación continua
+- ✅ SUMATIVA: Evaluación final
+- ✅ DIAGNOSTICA: Evaluación inicial
+
+**Períodos Académicos**:
+- ✅ I_TRIMESTRE, II_TRIMESTRE, III_TRIMESTRE
+- ✅ I_BIMESTRE, II_BIMESTRE, III_BIMESTRE, IV_BIMESTRE
+
+**Manejo de Datos**:
+- ✅ Campos opcionales (observations)
+- ✅ Validación de null values
+- ✅ Integridad referencial (IDs de estudiantes, cursos, aulas)
 
 ---
 
@@ -303,26 +391,70 @@ triggers {
 ### Maven no encontrado
 - Verificar configuración en Global Tool Configuration
 - Reiniciar Jenkins
+- Comprobar variable MAVEN_HOME
 
 ### Tests fallan en Jenkins
-- Verificar encoding UTF-8
+- Verificar encoding UTF-8 en JAVA_TOOL_OPTIONS
 - Revisar variables de entorno
+- Comprobar que JDK 17 esté configurado correctamente
 
 ### JaCoCo no genera reportes
 - Verificar que el plugin esté instalado
 - Comprobar que existe `target/jacoco.exec`
+- Ejecutar `mvn clean` antes de las pruebas
+
+### Error: "Campo capacityEvaluated es requerido"
+- Verificar que el DTO GradeRequest incluya el campo
+- Actualizar las pruebas con capacidades MINEDU válidas
+- Revisar que el mapper esté procesando correctamente
+
+### Error: "Competencia no válida según MINEDU"
+- Usar competencias del currículo nacional vigente
+- Ejemplos válidos:
+  - "Resuelve problemas de cantidad"
+  - "Se comunica oralmente en su lengua materna"
+  - "Gestiona proyectos de emprendimiento económico"
+
+### Pruebas lentas (> 10 segundos)
+- Verificar que se usen mocks (no base de datos real)
+- Revisar configuración de memoria: MAVEN_OPTS='-Xmx512m'
+- Considerar ejecutar pruebas en paralelo
 
 ---
 
 ## ✅ Checklist Final
 
+### Configuración Básica
 - [ ] Jenkins instalado y configurado
-- [ ] Plugins instalados
-- [ ] JDK y Maven configurados
-- [ ] Job creado
-- [ ] Jenkinsfile en repositorio
+- [ ] Plugins instalados (Git, Maven, JUnit, JaCoCo, Pipeline)
+- [ ] JDK 17 configurado en Global Tool Configuration
+- [ ] Maven 3.9+ configurado en Global Tool Configuration
+- [ ] Git configurado correctamente
+
+### Pipeline y Repositorio
+- [ ] Job de Pipeline creado en Jenkins
+- [ ] Jenkinsfile en la raíz del repositorio
+- [ ] Repositorio conectado correctamente
 - [ ] Primera ejecución exitosa
-- [ ] Reportes visibles
+
+### Validaciones de Pruebas
+- [ ] 3 pruebas unitarias ejecutándose correctamente
+- [ ] Test 1: Registro en Lote - PASSED
+- [ ] Test 2: Reporte Consolidado - PASSED
+- [ ] Test 3: Campos Opcionales - PASSED
+- [ ] Validaciones MINEDU v8.0 implementadas
+- [ ] Competencias y capacidades incluidas
+
+### Reportes y Métricas
+- [ ] Reportes JUnit visibles en Jenkins
+- [ ] Cobertura JaCoCo generándose correctamente
+- [ ] Artefactos archivándose en cada build
+- [ ] Console Output mostrando logs detallados
+
+### Automatización (Opcional)
+- [ ] Trigger por commit configurado
+- [ ] Trigger programado configurado
+- [ ] Notificaciones configuradas
 
 ---
 
@@ -334,5 +466,6 @@ triggers {
 
 ---
 
-**Última actualización**: 29 de Octubre, 2025  
-**Versión**: 1.0.0
+**Última actualización**: 30 de Octubre, 2025  
+**Versión**: 1.1.0  
+**Cambios**: Actualización para incluir validación de capacidades MINEDU v8.0

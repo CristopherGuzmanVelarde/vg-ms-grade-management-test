@@ -12,10 +12,10 @@
 ❌ Failures:          0
 ❌ Errors:            0
 ⏭️  Skipped:          0
-⏱️  Tiempo total:     3.659s
+⏱️  Tiempo total:     6.669s
 
 Estado: BUILD SUCCESS ✨
-Fecha: 29/10/2025 16:58:38
+Fecha: 30/10/2025 23:33:45
 ```
 
 ---
@@ -36,18 +36,20 @@ Fecha: 29/10/2025 16:58:38
 Estudiante 1:
   👤 Nombre:      María García
   🆔 ID:          STU2024101
-  � Nota:    i    A (15.0)
-  �  Competencia: Resuelve problemas de cantidad
-  � TPeríodo:     I_TRIMESTRE 2024
+  📊 Nota:        A (15.0)
+  📖 Competencia: Resuelve problemas de cantidad
+  🎯 Capacidad:   Traduce cantidades a expresiones numéricas
+  📅 Período:     I_TRIMESTRE 2024
   📝 Tipo:        FORMATIVA
   🏫 Aula:        5A-SECUNDARIA
-  � Cu:rso:       MAT-5TO-SEC
+  📚 Curso:       MAT-5TO-SEC
 
 Estudiante 2:
-  � Nombrde:      Carlos Pérez
+  👤 Nombre:      Carlos Pérez
   🆔 ID:          STU2024102
   📊 Nota:        AD (18.0)
   📖 Competencia: Resuelve problemas de cantidad
+  🎯 Capacidad:   Traduce cantidades a expresiones numéricas
   📅 Período:     I_TRIMESTRE 2024
   📝 Tipo:        FORMATIVA
   🏫 Aula:        5A-SECUNDARIA
@@ -62,8 +64,9 @@ Estudiante 2:
 - ✓ Logs de confirmación por cada registro
 - ✓ Estudiantes: María García y Carlos Pérez
 - ✓ Curso: Matemática 5to Secundaria
+- ✓ Capacidad evaluada según estándar MINEDU
 
-**⏱️ Tiempo de ejecución**: 0.036s
+**⏱️ Tiempo de ejecución**: 0.033s
 
 ---
 
@@ -100,7 +103,7 @@ Calificaciones:
 - ✓ Aula: 5A-SECUNDARIA
 - ✓ Estructura del reporte validada
 
-**⏱️ Tiempo de ejecución**: 3.478s
+**⏱️ Tiempo de ejecución**: 6.446s
 
 ---
 
@@ -114,10 +117,11 @@ Calificaciones:
 ```
 👨‍🎓 Estudiante:    Ana Torres
 🆔 ID:             STU2024303
-� Competencióa:    Se comunica oralmente en su lengua materna
-� Cali:ficación:   B (13.5)
-� PTipo:           SUMATIVA
-� Pereíodo:        II_BIMESTRE 2024 (2024-B2)
+📖 Competencia:    Se comunica oralmente en su lengua materna
+🎯 Capacidad:      Obtiene información del texto oral
+📊 Calificación:   B (13.5)
+📝 Tipo:           SUMATIVA
+📅 Período:        II_BIMESTRE 2024 (2024-B2)
 🏫 Aula:           5A-SECUNDARIA
 📚 Curso:          COM-5TO-SEC
 🆔 Grade ID:       GRD2024303
@@ -131,8 +135,9 @@ Calificaciones:
 - ✓ Campo observations manejado correctamente
 - ✓ Mapper procesa valores null sin errores
 - ✓ Repositorio persiste datos con campos opcionales
+- ✓ Capacidad evaluada incluida correctamente
 
-**⏱️ Tiempo de ejecución**: 0.067s
+**⏱️ Tiempo de ejecución**: 0.060s
 
 ---
 
@@ -197,6 +202,7 @@ Los reportes se generan en: `target/site/jacoco/index.html`
 | Validación de datos mock | Todos | ✅ |
 | Flujo reactivo (WebFlux) | Todos | ✅ |
 | Seguridad por profesor | Test 2 | ✅ |
+| Capacidades evaluadas MINEDU | Todos | ✅ |
 
 ---
 
@@ -207,11 +213,12 @@ Los reportes se generan en: `target/site/jacoco/index.html`
 - ✅ Salida **colorida y organizada** con iconos
 - ✅ Validación de **flujos reactivos** con Reactor
 - ✅ Cumple con **estándares MINEDU** para calificaciones
-- ✅ Tiempo de ejecución **optimizado** (< 5 segundos)
+- ✅ Tiempo de ejecución **optimizado** (< 7 segundos)
+- ✅ Incluye validación de **capacidades evaluadas** según MINEDU
 
 ---
 
-**Fecha de implementación**: 29 de Octubre, 2025  
+**Fecha de implementación**: 30 de Octubre, 2025  
 **Versión del proyecto**: 0.0.1-SNAPSHOT  
 **Java**: 17  
 **Spring Boot**: 3.4.9

@@ -14,6 +14,25 @@
 
 ---
 
+## 📚 Documentación Completa
+
+### 🚀 Inicio Rápido
+- **[INICIO_RAPIDO_JENKINS.md](INICIO_RAPIDO_JENKINS.md)** - Validación con Jenkins (5-15 min)
+- **[validar-pruebas.bat](validar-pruebas.bat)** / **[validar-pruebas.sh](validar-pruebas.sh)** - Scripts de validación local
+
+### 📖 Guías Detalladas
+- **[VALIDACION_JENKINS_PASO_A_PASO.md](VALIDACION_JENKINS_PASO_A_PASO.md)** - Guía completa de Jenkins
+- **[GUIA_JENKINS_INTEGRACION.md](GUIA_JENKINS_INTEGRACION.md)** - Integración CI/CD
+- **[PRUEBAS_UNITARIAS_IMPLEMENTADAS.md](PRUEBAS_UNITARIAS_IMPLEMENTADAS.md)** - Detalles de las 3 pruebas
+- **[GUIA_ENDPOINTS_POSTMAN.md](GUIA_ENDPOINTS_POSTMAN.md)** - Documentación de API
+
+### 🔧 Herramientas
+- **[COMANDOS_UTILES.md](COMANDOS_UTILES.md)** - Comandos de Maven, Docker, Jenkins
+- **[RESUMEN_VALIDACION_JENKINS.md](RESUMEN_VALIDACION_JENKINS.md)** - Resumen ejecutivo
+- **[CHANGELOG_JENKINS.md](CHANGELOG_JENKINS.md)** - Historial de cambios
+
+---
+
 ## 📖 Sobre el Proyecto
 
 **VG MS Grade Management** es un microservicio de alto rendimiento construido con Spring Boot y WebFlux, diseñado para manejar de manera eficiente el ciclo de vida de las calificaciones en un entorno educativo. La API está diseñada exclusivamente para el rol de `TEACHER`, garantizando que solo los usuarios autorizados puedan gestionar la información académica de los estudiantes.

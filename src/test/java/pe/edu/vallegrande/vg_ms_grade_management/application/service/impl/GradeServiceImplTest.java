@@ -48,13 +48,13 @@ class GradeServiceImplTest {
                 System.setProperty("file.encoding", "UTF-8");
                 System.setProperty("sun.stdout.encoding", "UTF-8");
                 System.setProperty("sun.stderr.encoding", "UTF-8");
-                
+
                 // Inicializar mapper real (no mock) para evitar problemas con Java 25
                 gradeMapper = new GradeMapper();
-                
+
                 // Inicializar servicio con dependencias
                 gradeService = new GradeServiceImpl(gradeRepository, gradeMapper);
-                
+
                 teacherId = "TCH2024001";
         }
 
@@ -75,6 +75,7 @@ class GradeServiceImplTest {
                 request1.setPeriodId("2024-T1");
                 request1.setTypePeriod(TypePeriod.I_TRIMESTRE);
                 request1.setCompetenceName("Resuelve problemas de cantidad");
+                request1.setCapacityEvaluated("Traduce cantidades a expresiones numéricas");
                 request1.setGradeScale(GradeScale.A);
                 request1.setNumericGrade(new BigDecimal("15.0"));
                 request1.setEvaluationType(EvaluationType.FORMATIVA);
@@ -87,6 +88,7 @@ class GradeServiceImplTest {
                 request2.setPeriodId("2024-T1");
                 request2.setTypePeriod(TypePeriod.I_TRIMESTRE);
                 request2.setCompetenceName("Resuelve problemas de cantidad");
+                request2.setCapacityEvaluated("Traduce cantidades a expresiones numéricas");
                 request2.setGradeScale(GradeScale.AD);
                 request2.setNumericGrade(new BigDecimal("18.0"));
                 request2.setEvaluationType(EvaluationType.FORMATIVA);
@@ -96,6 +98,7 @@ class GradeServiceImplTest {
                 System.out.println("   👤 Estudiante 1: María García (STU2024101) | Nota: A (15.0)");
                 System.out.println("   👤 Estudiante 2: Carlos Pérez (STU2024102) | Nota: AD (18.0)");
                 System.out.println("   📖 Competencia: Resuelve problemas de cantidad");
+                System.out.println("   🎯 Capacidad: Traduce cantidades a expresiones numéricas");
                 System.out.println("   📅 Período: I_TRIMESTRE 2024\n");
 
                 // Mock del repositorio - el mapper es real
@@ -191,7 +194,7 @@ class GradeServiceImplTest {
                 verify(gradeRepository, times(1))
                                 .findByClassroomIdAndPeriodIdAndTypePeriodAndTeacherIdAndStatusActive(
                                                 classroomId, periodId, typePeriod, teacherId);
-                
+
                 System.out.println("\n✨ TEST 2 COMPLETADO: Reporte consolidado generado exitosamente");
                 System.out.println("════════════════════════════════════════════════════════════════\n");
         }
@@ -213,6 +216,7 @@ class GradeServiceImplTest {
                 requestWithoutObservations.setPeriodId("2024-B2");
                 requestWithoutObservations.setTypePeriod(TypePeriod.II_BIMESTRE);
                 requestWithoutObservations.setCompetenceName("Se comunica oralmente en su lengua materna");
+                requestWithoutObservations.setCapacityEvaluated("Obtiene información del texto oral");
                 requestWithoutObservations.setGradeScale(GradeScale.B);
                 requestWithoutObservations.setNumericGrade(new BigDecimal("13.5"));
                 requestWithoutObservations.setEvaluationType(EvaluationType.SUMATIVA);
@@ -221,8 +225,9 @@ class GradeServiceImplTest {
 
                 System.out.println("📊 Datos Mock Preparados:");
                 System.out.println("   📖 Competencia: Se comunica oralmente en su lengua materna");
-                System.out.println("   📊 Calificación: B (13.5)");
-                System.out.println("   📝 Observaciones: null");
+                System.out.println("   🎯 Capacidad: Obtiene información del texto oral");
+                System.out.println("   � OCalificación: B (13.5)");
+                System.out.println("   � Observac iones: null");
                 System.out.println("   📅 Período: II_BIMESTRE\n");
 
                 // Mock del repositorio - el mapper es real
@@ -238,7 +243,9 @@ class GradeServiceImplTest {
                 StepVerifier.create(gradeService.registerGrade(requestWithoutObservations, teacherId))
                                 .expectNextMatches(savedGrade -> {
                                         System.out.println("   ✅ Calificación registrada: " + savedGrade.getId());
-                                        System.out.println("   ✅ Observaciones: " + (savedGrade.getObservations() == null ? "null (OK)" : "ERROR"));
+                                        System.out.println("   ✅ Observaciones: "
+                                                        + (savedGrade.getObservations() == null ? "null (OK)"
+                                                                        : "ERROR"));
                                         assertThat(savedGrade.getId()).isEqualTo("GRD2024303");
                                         assertThat(savedGrade.getObservations()).isNull();
                                         return true;
@@ -246,7 +253,7 @@ class GradeServiceImplTest {
                                 .verifyComplete();
 
                 verify(gradeRepository, times(1)).save(any(GradeDocument.class));
-                
+
                 System.out.println("\n✨ TEST 3 COMPLETADO: Campo opcional manejado correctamente");
                 System.out.println("════════════════════════════════════════════════════════════════\n");
         }
