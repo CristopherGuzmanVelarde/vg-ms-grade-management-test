@@ -36,86 +36,20 @@ pipeline {
                         bat '''
                             @echo off
                             echo ========================================
-                            echo Buscando Java 17 en el sistema...
+                            echo Verificando Java en el sistema...
                             echo ========================================
                             
-                            REM Verificar si java esta en PATH
                             where java >nul 2>&1
-                            if %ERRORLEVEL% EQU 0 (
-                                echo [INFO] Java encontrado en PATH
-                                java -version
-                                for /f "tokens=3" %%v in ('java -version 2^>^&1 ^| findstr /i "version"') do (
-                                    echo Version detectada: %%v
-                                )
-                            ) else (
-                                echo [WARN] Java no encontrado en PATH
-                            )
-                            
-                            echo.
-                            echo Buscando instalaciones de Java 17...
-                            
-                            REM Buscar Java 17 en ubicaciones comunes
-                            set "JAVA_FOUND=0"
-                            
-                            if exist "C:\\Program Files\\Java\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\Java\\jdk-17"
-                                set "JAVA_FOUND=1"
-                                echo [OK] Encontrado en Program Files\\Java\\jdk-17
-                            )
-                            
-                            if exist "C:\\Program Files\\Java\\jdk-17.0.10" (
-                                set "JAVA_HOME=C:\\Program Files\\Java\\jdk-17.0.10"
-                                set "JAVA_FOUND=1"
-                                echo [OK] Encontrado en Program Files\\Java\\jdk-17.0.10
-                            )
-                            
-                            if exist "C:\\Program Files\\OpenJDK\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\OpenJDK\\jdk-17"
-                                set "JAVA_FOUND=1"
-                                echo [OK] Encontrado en Program Files\\OpenJDK\\jdk-17
-                            )
-                            
-                            if exist "C:\\Program Files\\Eclipse Adoptium\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-17"
-                                set "JAVA_FOUND=1"
-                                echo [OK] Encontrado en Program Files\\Eclipse Adoptium\\jdk-17
-                            )
-                            
-                            if exist "C:\\Program Files\\Microsoft\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\Microsoft\\jdk-17"
-                                set "JAVA_FOUND=1"
-                                echo [OK] Encontrado en Program Files\\Microsoft\\jdk-17
-                            )
-                            
-                            if "%JAVA_FOUND%"=="0" (
-                                echo.
-                                echo ========================================
-                                echo ERROR: Java 17 no encontrado
-                                echo ========================================
-                                echo.
-                                echo Por favor, instala Java 17 desde:
-                                echo   - Eclipse Adoptium: https://adoptium.net/temurin/releases/?version=17
-                                echo   - Oracle JDK: https://www.oracle.com/java/technologies/downloads/#java17
-                                echo   - Microsoft OpenJDK: https://learn.microsoft.com/java/openjdk/download
-                                echo.
-                                echo O configura JAVA_HOME manualmente en Jenkins:
-                                echo   Dashboard ^> Administrar Jenkins ^> Configurar el sistema ^> Variables de entorno
-                                echo.
-                                echo Consulta: CONFIGURACION_JENKINS_WINDOWS.md
-                                echo ========================================
+                            if %ERRORLEVEL% NEQ 0 (
+                                echo [ERROR] Java no encontrado en PATH
                                 exit /b 1
                             )
                             
-                            echo.
-                            echo ========================================
-                            echo JAVA_HOME configurado: %JAVA_HOME%
-                            echo ========================================
-                            set "PATH=%JAVA_HOME%\\bin;%PATH%"
+                            echo [INFO] Java encontrado en PATH
+                            java -version
                             
                             echo.
-                            echo Verificando configuracion...
-                            java -version
-                            echo.
+                            echo ========================================
                             echo Iniciando compilacion...
                             echo ========================================
                             
@@ -154,18 +88,7 @@ pipeline {
                     } else {
                         bat '''
                             @echo off
-                            REM Configurar JAVA_HOME para Windows
-                            if exist "C:\\Program Files\\Java\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\Java\\jdk-17"
-                            ) else if exist "C:\\Program Files\\OpenJDK\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\OpenJDK\\jdk-17"
-                            ) else if exist "C:\\Program Files\\Eclipse Adoptium\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-17"
-                            ) else if exist "C:\\Program Files\\Microsoft\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\Microsoft\\jdk-17"
-                            )
-                            set "PATH=%JAVA_HOME%\\bin;%PATH%"
-                            
+                            echo Ejecutando pruebas unitarias...
                             mvn test -Dtest=GradeServiceImplTest#registerBatchGrades_Success,GradeServiceImplTest#getClassroomPeriodReport_Success,GradeServiceImplTest#registerGrade_WithNullObservations_Success
                         '''
                     }
@@ -199,18 +122,7 @@ pipeline {
                     } else {
                         bat '''
                             @echo off
-                            REM Configurar JAVA_HOME para Windows
-                            if exist "C:\\Program Files\\Java\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\Java\\jdk-17"
-                            ) else if exist "C:\\Program Files\\OpenJDK\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\OpenJDK\\jdk-17"
-                            ) else if exist "C:\\Program Files\\Eclipse Adoptium\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-17"
-                            ) else if exist "C:\\Program Files\\Microsoft\\jdk-17" (
-                                set "JAVA_HOME=C:\\Program Files\\Microsoft\\jdk-17"
-                            )
-                            set "PATH=%JAVA_HOME%\\bin;%PATH%"
-                            
+                            echo Generando reporte de cobertura...
                             mvn jacoco:report
                         '''
                     }
