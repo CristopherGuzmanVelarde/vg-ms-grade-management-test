@@ -4,6 +4,7 @@ pipeline {
     environment {
         JAVA_TOOL_OPTIONS = '-Dfile.encoding=UTF-8'
         MAVEN_OPTS = '-Xmx512m'
+        SLACK_CHANNEL = '#jenkins-builds'  // Canal de Slack para notificaciones
     }
     
     stages {
@@ -154,7 +155,30 @@ pipeline {
             echo '═══════════════════════════════════════════════════════════════'
             echo '📈 Reportes de cobertura y pruebas disponibles en Jenkins'
             echo '🎉 Todas las validaciones completadas exitosamente'
-            echo '📅 Última actualización: 30/10/2025'
+            echo '📅 Última actualización: 31/10/2025'
+            
+            // Notificación de éxito a Slack
+            slackSend(
+                channel: env.SLACK_CHANNEL,
+                color: 'good',
+                message: """
+                ✅ *BUILD EXITOSO* - ${env.JOB_NAME} #${env.BUILD_NUMBER}
+                
+                *Proyecto:* vg-ms-grade-management
+                *Branch:* ${env.GIT_BRANCH ?: 'main'}
+                *Commit:* ${env.GIT_COMMIT?.take(7) ?: 'N/A'}
+                
+                *Pruebas Ejecutadas:*
+                ✓ Test 1: Registro de Calificaciones en Lote ✅
+                ✓ Test 2: Reporte Consolidado por Aula ✅  
+                ✓ Test 3: Manejo de Campos Opcionales ✅
+                
+                *Duración:* ${currentBuild.durationString.replace(' and counting', '')}
+                *Ver build:* ${env.BUILD_URL}
+                """.stripIndent(),
+                teamDomain: 'psw-demos',
+                tokenCredentialId: 'slack-token-psw-demos'
+            )
         }
         failure {
             echo '❌ BUILD FALLÓ'
@@ -162,10 +186,49 @@ pipeline {
             echo '🔍 Revisa los logs de consola para identificar el error'
             echo '📧 Se recomienda notificar al equipo de desarrollo'
             echo '═══════════════════════════════════════════════════════════════'
+            
+            // Notificación de fallo a Slack
+            slackSend(
+                channel: env.SLACK_CHANNEL,
+                color: 'danger',
+                message: """
+                ❌ *BUILD FALLIDO* - ${env.JOB_NAME} #${env.BUILD_NUMBER}
+                
+                *Proyecto:* vg-ms-grade-management
+                *Branch:* ${env.GIT_BRANCH ?: 'main'}
+                *Commit:* ${env.GIT_COMMIT?.take(7) ?: 'N/A'}
+                
+                *Error:* El build ha fallado durante la ejecución
+                *Duración:* ${currentBuild.durationString.replace(' and counting', '')}
+                
+                *Acción requerida:* Revisa los logs de consola
+                *Ver build:* ${env.BUILD_URL}console
+                """.stripIndent(),
+                teamDomain: 'psw-demos',
+                tokenCredentialId: 'slack-token-psw-demos'
+            )
         }
         unstable {
             echo '⚠️ BUILD INESTABLE'
             echo 'Algunas pruebas fallaron o hay problemas de calidad'
+            
+            // Notificación de build inestable a Slack
+            slackSend(
+                channel: env.SLACK_CHANNEL,
+                color: 'warning',
+                message: """
+                ⚠️ *BUILD INESTABLE* - ${env.JOB_NAME} #${env.BUILD_NUMBER}
+                
+                *Proyecto:* vg-ms-grade-management
+                *Branch:* ${env.GIT_BRANCH ?: 'main'}
+                
+                *Estado:* Algunas pruebas fallaron o hay problemas de calidad
+                *Duración:* ${currentBuild.durationString.replace(' and counting', '')}
+                *Ver build:* ${env.BUILD_URL}
+                """.stripIndent(),
+                teamDomain: 'psw-demos',
+                tokenCredentialId: 'slack-token-psw-demos'
+            )
         }
     }
 }
